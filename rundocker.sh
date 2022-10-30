@@ -8,11 +8,10 @@ DOCKER_IMAGE="fbot/firasim:latest"
 # Executando o docker
 docker run  -it \
             --rm \
+            --gpus all \
             --privileged \
             --net=host \
-            --runtime=nvidia \
-            --env="DISPLAY" \
-            --env="TERM" \
+            -v /tmp/.X11-unix:/tmp/.X11-unix \
+            -e DISPLAY=$DISPLAY \
+            -e QT_X11_NO_MITSHM=1 \
             $DOCKER_IMAGE
-
-# docker run  -it --rm --privileged --net=host --env="DISPLAY" --env="TERM" fbot/firasim:latest

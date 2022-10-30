@@ -26,6 +26,17 @@ RUN apt-get update && apt-get install -y \
     mkdir build && cd build && \
     cmake .. && make && sudo make install
 
+# Dependencies for glvnd and X11.
+RUN apt-get update \
+  && apt-get install -y -qq --no-install-recommends \
+    libglvnd0 \
+    libgl1 \
+    libglx0 \
+    libegl1 \
+    libxext6 \
+    libx11-6 \
+  && rm -rf /var/lib/apt/lists/*
+
 FROM cacher as builder
 
 # Install FIRASim and VSSReferee
@@ -53,6 +64,9 @@ ENV QT_X11_NO_MITSHM=1
 
 RUN mkdir -m 700 /tmp/runtime-root
 ENV XDG_RUNTIME_DIR=/tmp/runtime-root
+
+ENV NVIDIA_VISIBLE_DEVICES all
+ENV NVIDIA_DRIVER_CAPABILITIES graphics,utility,compute
 
 COPY constants.json /vsss_ws/VSSReferee/src/constants/
 
